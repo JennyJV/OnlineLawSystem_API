@@ -5,7 +5,6 @@ const validateCourtInput = require("../Validation/court");
 exports.states = (req, res) => {
   // Form validation
   console.log("inside state");
-
   StateDistrict.find({}, { "state": 1}).then(result => {
     if (result.length > 0) {
       console.log("Result found: " + result.length);
@@ -38,6 +37,28 @@ const state=req.body.state;
     } else {
       res.status(400).json({
         message: 'States cannot be loaded',
+      });
+    }
+  }).catch(error => {
+    res.status(500).json({
+      message: 'Error in Database',
+      error: error
+    });
+  });
+}
+
+exports.getCourtsByArea = (req, res) => {
+  console.log("inside getCourtsByArea");
+const district=req.body.district;
+Court.find({"district":district},{ "court": 1}).then(result => {
+    if (result.length > 0) {
+      console.log("Result found: " + result.length);
+      res.status(200).json({
+        courts: result
+      });
+    } else {
+      res.status(400).json({
+        message: 'Courts cannot be loaded',
       });
     }
   }).catch(error => {

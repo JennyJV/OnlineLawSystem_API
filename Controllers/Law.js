@@ -26,3 +26,23 @@ exports.addLaw = (req, res) => {
             .catch(err => console.log(err));
           
     }});}}
+
+    exports.getAllLaw = (req, res) => {
+      console.log("inside getAllLaw");
+        Law.find({},{ "chapter": 1, "ipc": 1,"_id":0}).then(result => {
+          if (result.length > 0) {
+            console.log("Result found: " + result.length);
+            res.status(200).json({
+              laws: result
+            });
+          } else {
+            res.status(400).json({
+              message: 'States cannot be loaded',
+            });
+          }
+        }).catch(error => {
+          res.status(500).json({
+            message: 'Error in Database',
+            error: error
+          });
+        });}

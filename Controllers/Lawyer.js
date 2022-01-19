@@ -30,6 +30,28 @@ exports.addLawyer = (req, res) => {
           
     }});}}
 
+    exports.getLawyerByExpertise = (req, res) => {
+      console.log("inside getLawyerByExpertise");
+    const expertise=req.body.expertise;
+    Lawyer.find({"expertise":expertise},{ "name": 1,"email":1}).then(result => {
+        if (result.length > 0) {
+          console.log("Result found: " + result.length);
+          res.status(200).json({
+            lawyers: result
+          });
+        } else {
+          res.status(400).json({
+            message: 'Lawyers cannot be loaded',
+          });
+        }
+      }).catch(error => {
+        res.status(500).json({
+          message: 'Error in Database',
+          error: error
+        });
+      });
+    }
+
     exports.expertise = (req, res) => {
       console.log("inside expertise");
       Expertise.find({}, {"expertise": 1}).then(result => {
