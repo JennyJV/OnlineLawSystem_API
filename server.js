@@ -38,7 +38,7 @@ app.use('/', routes);
 const db = process.env.DB;
 // Connect to MongoDB
 mongoose
-  .connect('mongodb+srv://onlinelawsystem:1OnlineLawSystem%23@cluster0.74vqj.mongodb.net/OLS?retryWrites=true&w=majority',
+  .connect('',
     {
       useNewUrlParser: true,
       useUnifiedTopology: true
