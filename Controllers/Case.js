@@ -14,14 +14,6 @@ exports.fileCase = (req, res) => {
       console.log("Result found: " + result.length);
       res.status(400).json({ error: "Case already exists" });
     } else {
-      console.log(req.body.petitionerName);
-      console.log(req.body.petitionerEmail);
-      console.log(req.body.accusedName);
-      console.log(req.body.accusedAddress);
-      console.log(req.body.court);
-      console.log(req.body.lawyer);
-      console.log(req.body.ipc);
-      console.log(req.body.casestatus);
       const newCase = new Case({
         petitionerName: req.body.petitionerName,
         petitionerEmail: req.body.petitionerEmail,
@@ -38,4 +30,68 @@ exports.fileCase = (req, res) => {
             .catch(err => console.log(err));
           
     }});}}
+
+    exports.getCaseByUser = (req, res) => {
+      console.log("inside getCaseByUser");
+      const userId=req.body.userId;
+      if(req.body.role == 'admin'){
+        Case.find().then(result => {
+          if (result.length > 0) {
+            console.log("Result found: " + result.length);
+            res.status(200).json({
+              cases: result
+            });
+          } else {
+            res.status(400).json({
+              message: 'Cases cannot be loaded',
+            });
+          }
+        }).catch(error => {
+          res.status(500).json({
+            message: 'Error in Database',
+            error: error
+          });
+        });
+      }else if(req.body.role == 'lawyer'){
+        Case.find({"lawyer":userId}).then(result => {
+          if (result.length > 0) {
+            console.log("Result found: " + result.length);
+            res.status(200).json({
+              cases: result
+            });
+          } else {
+            res.status(400).json({
+              message: 'Cases cannot be loaded',
+            });
+          }
+        }).catch(error => {
+          res.status(500).json({
+            message: 'Error in Database',
+            error: error
+          });
+        });
+      }
+      else if(req.body.role == 'public'){
+        Case.find({"petitionerEmail":userId}).then(result => {
+          if (result.length > 0) {
+            console.log("Result found: " + result.length);
+            res.status(200).json({
+              cases: result
+            });
+          } else {
+            res.status(400).json({
+              message: 'Cases cannot be loaded',
+            });
+          }
+        }).catch(error => {
+          res.status(500).json({
+            message: 'Error in Database',
+            error: error
+          });
+        });
+
+      }
+    
+    
+    }
 

@@ -21,6 +21,8 @@ router.post('/addLawyer',lawyerController.addLawyer);
 router.get('/expertise',lawyerController.expertise);
 router.post('/getLawyerByExpertise',lawyerController.getLawyerByExpertise);
 router.post('/fileCase',caseController.fileCase);
+router.post('/getCaseByUser',caseController.getCaseByUser);
+
 
 
 // export the router
