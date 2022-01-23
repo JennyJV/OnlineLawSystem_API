@@ -22,6 +22,8 @@ router.get('/expertise',lawyerController.expertise);
 router.post('/getLawyerByExpertise',lawyerController.getLawyerByExpertise);
 router.post('/fileCase',caseController.fileCase);
 router.post('/getCaseByUser',caseController.getCaseByUser);
+router.post('/getnewCases',caseController.getnewCases);
+router.post('/verifyCase',caseController.verifyCase);
 
 
 

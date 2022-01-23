@@ -1,8 +1,12 @@
 const { timeStamp } = require("console");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
 // Create Schema
 const CaseSchema = new Schema({
+  caseID: {
+    type: String
+  },
   petitionerName: {
     type: String,
     required: true
@@ -33,6 +37,9 @@ const CaseSchema = new Schema({
   },
   casestatus:{
     type: String
+  },
+  year:{
+    type:String
   }
 });
 module.exports = mongoose.model('Case', CaseSchema, 'Case');
