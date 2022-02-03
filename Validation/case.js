@@ -12,7 +12,7 @@ module.exports = function validateCaseInput(data) {
   data.lawyer = !isEmpty(data.lawyer) ? data.lawyer : "";
   data.ipc = !isEmpty(data.ipc) ? data.ipc : "";
   data.casestatus = !isEmpty(data.casestatus) ? data.casestatus : "";
-
+  data.caseType = !isEmpty(data.caseType) ? data.caseType : "";
 
   if (Validator.isEmpty(data.petitionerName)) {
     errors.petitionerName = "Petitioner Name field is required";
@@ -25,8 +25,11 @@ module.exports = function validateCaseInput(data) {
   if (Validator.isEmpty(data.accusedName)) {
     errors.accusedName = "Accused Name field is required";
   }
+  if (Validator.isEmpty(data.accusedAddress)) {
+    errors.accusedAddress = "Accused Address field is required";
+  }
   if (Validator.isEmpty(data.court)) {
-    errors.petitioncourterEmail = "Court field is required";
+    errors.court = "Court field is required";
   }
   if (Validator.isEmpty(data.lawyer)) {
     errors.lawyer = "Lawyer field is required";
@@ -39,7 +42,9 @@ module.exports = function validateCaseInput(data) {
   if (Validator.isEmpty(data.casestatus)) {
     errors.casestatus = "Status field is required";
   }
-
+  if (Validator.isEmpty(data.caseType)) {
+    errors.caseType = "Case Type field is required";
+  }
   return {
     errors,
     isValid: isEmpty(errors)

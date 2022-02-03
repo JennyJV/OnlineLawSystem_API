@@ -75,14 +75,16 @@ exports.addCourt = (req, res) => {
   console.log("district: "+req.body.district);
   console.log("court: "+req.body.court);
   const { errors, isValid } = validateCourtInput(req.body);
+  
   // Check validation
   if (!isValid) {
+    console.log(errors);
     res.status(400).json(errors);
   }else{
-    Court.findOne({$and:[{"state":req.body.StateId},{"district": req.body.district},{"court": req.body.court}]}).then(result => {
+    Court.findOne({"court": req.body.court}).then(result => {
     if (result) {
       console.log("Result found: " + result.length);
-      res.status(400).json({ error: "Court already exists" });
+      res.status(400).json({ message: "Court already exists" });
     } else {
       const newCourt = new Court({
         state: req.body.state,

@@ -12,16 +12,16 @@ exports.register = (req, res) => {
   if (!isValid) {
     res.status(400).json(errors);
   }else{
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({$or:[{"email":req.body.email},{"aadhar": req.body.aadhar}]}).then(user => {
     if (user) {
-      res.status(400).json({ email: "Email already exists" });
+      res.status(400).json({ message: "User already exists" });
     } else {
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
         aadhar: req.body.aadhar,
-        role: req.body.role
+        role: req.body.role.toLowerCase()
       });
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -44,9 +44,12 @@ exports.login = (req, res) => {
   // Check validation
   if (!isValid) {
     res.status(400).json(errors);
+    console.log(errors);
   }else{
   const email = req.body.email;
   const password = req.body.password;
+  console.log("inside login");
+  console.log(email+ " "+password);
   // Find user by email
   User.findOne({ email }).then(result => {
     // Check if user exists
@@ -70,19 +73,22 @@ exports.login = (req, res) => {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {
+            console.log("logged in successfully")
             res.status(200).json({
               success: true,
               token: "Bearer " + token,
               message: 'User logged in Successfully !!',
               isLoggedIn: true,
-              user: result
+              user: result,
+              role:result.role
             });
           }
         );
       } else {
+        console.log("Incorrect login credentials");
         res
           .status(400)
-          .json({ message: "Password incorrect" });
+          .json({ message: "Incorrect login credentials" });
       }
     });}
   });}

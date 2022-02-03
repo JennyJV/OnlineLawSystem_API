@@ -35,6 +35,10 @@ const CaseSchema = new Schema({
     type: String,
     required: true
   },
+  caseType: {
+    type: String,
+    required: true
+  },
   casestatus:{
     type: String
   },

@@ -21,6 +21,7 @@ exports.fileCase = (req, res) => {
         court: req.body.court,
         lawyer: req.body.lawyer,
         ipc: req.body.ipc,
+        caseType: req.body.caseType,
         casestatus: "New",
         caseID:generateID(req.body.petitionerName,req.body.accusedName),
         year: new Date().getFullYear()
@@ -38,13 +39,15 @@ exports.fileCase = (req, res) => {
       if(req.body.role == 'admin'){
         Case.find().then(result => {
           if (result.length > 0) {
-            console.log("Result found: " + result.length);
+            console.log("Result found in getCaseByUser: " + result.length);
+            const yearList = Array.from(new Set(result.map(obj => obj.year)));
             res.status(200).json({
-              cases: result
+              cases: result,
+              years:yearList
             });
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded',
+              message: 'Cases cannot be loaded'
             });
           }
         }).catch(error => {
@@ -64,7 +67,7 @@ exports.fileCase = (req, res) => {
             });
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded',
+              message: 'Cases cannot be loaded'
             });
           }
         }).catch(error => {
@@ -81,9 +84,10 @@ exports.fileCase = (req, res) => {
             res.status(200).json({
               cases: result
             });
+            
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded',
+              message: 'Cases cannot be loaded'
             });
           }
         }).catch(error => {
@@ -109,7 +113,7 @@ exports.fileCase = (req, res) => {
             });
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded',
+              message: 'Cases cannot be loaded'
             });
           }
         }).catch(error => {
@@ -119,8 +123,65 @@ exports.fileCase = (req, res) => {
           });
         });
       }
-      exports.verifyCase = (req, res) => {
-        console.log("inside verifyCase");
+      exports.getAcceptedCases = (req, res) => {
+        console.log("inside getAcceptedCases");
+        const userId=req.body.userId;
+          Case.find({"lawyer":userId, "casestatus":"Accepted"}).then(result => {
+            if (result.length > 0) {
+              console.log("Result found: " + result.length);
+              res.status(200).json({
+                cases: result
+              });
+            } else {
+              res.status(400).json({
+                message: 'Cases cannot be loaded'
+              });
+            }
+          }).catch(error => {
+            res.status(500).json({
+              message: 'Error in Database',
+              error: error
+            });
+          });
+        }
+      
+        exports.filterCase = (req, res) => {
+          console.log("inside filterCase");
+          console.log(typeof req.body.caseByType);
+          console.log(typeof req.body.caseByYear);
+          var jsonData = {};
+          if(req.body.caseByType){
+            console.log("case type is not empty");
+            jsonData.caseType=req.body.caseByType;
+          }
+          if(req.body.caseByYear){
+            console.log("case year is not empty");
+            jsonData.year=req.body.caseByYear;
+          }
+          console.log(jsonData);
+            Case.find(jsonData).then(result => {
+              if (result.length > 0) {
+                console.log("Result found in filterCase: " + result.length);
+                res.status(200).json({
+                  cases: result
+                });
+              } else {
+                console.log("empty response");
+                res.status(400).json({
+                  err: result,
+                  message: 'Cases cannot be loaded'
+                });
+              }
+            }).catch(error => {
+              res.status(500).json({
+                message: 'Error in Database',
+                error: error
+              });
+            });
+          }
+
+      exports.updateCaseStatus = (req, res) => {
+        console.log("inside updateCaseStatus");
         const caseID=req.body.caseId;
         const status=req.body.status;
         console.log(caseID);
@@ -132,7 +193,7 @@ exports.fileCase = (req, res) => {
               });
             } else {
               res.status(400).json({
-                message: 'Case cannot be updated',
+                message: 'Case cannot be updated'
               });
             }
           }).catch(error => {
