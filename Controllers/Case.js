@@ -8,10 +8,10 @@ exports.fileCase = (req, res) => {
   if (!isValid) {
     res.status(400).json(errors);
   }else{
-    Case.findOne({$and:[{"petitionerName":req.body.petitionerName},{"accusedName": req.body.accusedName},{"court": req.body.court},{"lawyer": req.body.lawyer},{"ipc": req.body.ipc}]}).then(result => {
+    Case.findOne({$and:[{"petitionerEmail":req.body.petitionerEmail},{"accusedName": req.body.accusedName},{"court": req.body.court},{"lawyer": req.body.lawyer},{"ipc": req.body.ipc}]}).then(result => {
     if (result) {
       console.log("Result found: " + result.length);
-      res.status(400).json({ error: "Case already exists" });
+      res.status(400).json({ message: "Case already exists!" });
     } else {
       const newCase = new Case({
         petitionerName: req.body.petitionerName,
@@ -28,14 +28,18 @@ exports.fileCase = (req, res) => {
        });
        newCase
             .save()
-            .then(cases => res.json(cases))
-            .catch(err => console.log(err));
+            .then(result=>
+              res.status(400).json({
+                message: 'Case added Successfully!!'
+              }))
+            .catch(err => res.status(400).json({ message: "Something went wrong!" }));
           
     }});}}
 
     exports.getCaseByUser = (req, res) => {
       console.log("inside getCaseByUser");
       const userId=req.body.userId;
+      console.log();
       if(req.body.role == 'admin'){
         Case.find().then(result => {
           if (result.length > 0) {
@@ -47,19 +51,19 @@ exports.fileCase = (req, res) => {
             });
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded'
+              message: 'No cases to display!'
             });
           }
         }).catch(error => {
           res.status(500).json({
-            message: 'Error in Database',
+            message: 'Error in Database!',
             error: error
           });
         });
       }else if(req.body.role == 'lawyer'){
         console.log("inside lawyer");
         console.log(userId);
-        Case.find({"lawyer":userId}).then(result => {
+        Case.find({"lawyer":userId, "casestatus":"New"}).then(result => {
           if (result.length > 0) {
             console.log("Result found: " + result.length);
             res.status(200).json({
@@ -67,12 +71,12 @@ exports.fileCase = (req, res) => {
             });
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded'
+              message: 'No cases to display!'
             });
           }
         }).catch(error => {
           res.status(500).json({
-            message: 'Error in Database',
+            message: 'Error in Database!',
             error: error
           });
         });
@@ -87,12 +91,12 @@ exports.fileCase = (req, res) => {
             
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded'
+              message: 'No cases to display!'
             });
           }
         }).catch(error => {
           res.status(500).json({
-            message: 'Error in Database',
+            message: 'Error in Database!',
             error: error
           });
         });
@@ -113,12 +117,12 @@ exports.fileCase = (req, res) => {
             });
           } else {
             res.status(400).json({
-              message: 'Cases cannot be loaded'
+              message: 'No cases to display!'
             });
           }
         }).catch(error => {
           res.status(500).json({
-            message: 'Error in Database',
+            message: 'Error in Database!',
             error: error
           });
         });
@@ -134,12 +138,12 @@ exports.fileCase = (req, res) => {
               });
             } else {
               res.status(400).json({
-                message: 'Cases cannot be loaded'
+                message: 'No cases to display!'
               });
             }
           }).catch(error => {
             res.status(500).json({
-              message: 'Error in Database',
+              message: 'Error in Database!',
               error: error
             });
           });
@@ -151,11 +155,9 @@ exports.fileCase = (req, res) => {
           console.log(typeof req.body.caseByYear);
           var jsonData = {};
           if(req.body.caseByType){
-            console.log("case type is not empty");
             jsonData.caseType=req.body.caseByType;
           }
           if(req.body.caseByYear){
-            console.log("case year is not empty");
             jsonData.year=req.body.caseByYear;
           }
           console.log(jsonData);
@@ -169,12 +171,12 @@ exports.fileCase = (req, res) => {
                 console.log("empty response");
                 res.status(400).json({
                   err: result,
-                  message: 'Cases cannot be loaded'
+                  message: 'No cases to display!'
                 });
               }
             }).catch(error => {
               res.status(500).json({
-                message: 'Error in Database',
+                message: 'Error in Database!',
                 error: error
               });
             });
@@ -193,12 +195,12 @@ exports.fileCase = (req, res) => {
               });
             } else {
               res.status(400).json({
-                message: 'Case cannot be updated'
+                message: 'Case cannot be updated at this moment!'
               });
             }
           }).catch(error => {
             res.status(500).json({
-              message: 'Error in Database',
+              message: 'Error in Database!',
               error: error
             });
           });

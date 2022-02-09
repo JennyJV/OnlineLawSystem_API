@@ -14,7 +14,7 @@ exports.register = (req, res) => {
   }else{
   User.findOne({$or:[{"email":req.body.email},{"aadhar": req.body.aadhar}]}).then(user => {
     if (user) {
-      res.status(400).json({ message: "User already exists" });
+      res.status(400).json({ message: "User already exists!" });
     } else {
       const newUser = new User({
         name: req.body.name,
@@ -54,7 +54,7 @@ exports.login = (req, res) => {
   User.findOne({ email }).then(result => {
     // Check if user exists
     if (!result) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found!" });
     }else{
     // Check password
     bcrypt.compare(password, result.password).then(isMatch => {
@@ -77,7 +77,7 @@ exports.login = (req, res) => {
             res.status(200).json({
               success: true,
               token: "Bearer " + token,
-              message: 'User logged in Successfully !!',
+              message: 'User logged in Successfully!!',
               isLoggedIn: true,
               user: result,
               role:result.role
@@ -88,7 +88,7 @@ exports.login = (req, res) => {
         console.log("Incorrect login credentials");
         res
           .status(400)
-          .json({ message: "Incorrect login credentials" });
+          .json({ message: "Incorrect login credentials!" });
       }
     });}
   });}

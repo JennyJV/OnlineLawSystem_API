@@ -3,12 +3,12 @@ const isEmpty = require("is-empty");
 module.exports = function validateRegisterInput(data) {
   let errors = {};
 
-  data.name = !isEmpty(data.name) ? data.name : "";
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
-  data.password2 = !isEmpty(data.password2) ? data.password2 : "";
-  data.aadhar = !isEmpty(data.aadhar) ? data.aadhar : "";
-  data.role = !isEmpty(data.role) ? data.role : "";
+  data.name = !isEmpty(data.name.trim()) ? data.name.trim() : "";
+  data.email = !isEmpty(data.email.trim()) ? data.email.trim() : "";
+  data.password = !isEmpty(data.password.trim()) ? data.password.trim() : "";
+  data.password2 = !isEmpty(data.password2.trim()) ? data.password2.trim() : "";
+  data.aadhar = !isEmpty(data.aadhar.trim()) ? data.aadhar.trim() : "";
+  data.role = !isEmpty(data.role.trim()) ? data.role.trim() : "";
 
   if (Validator.isEmpty(data.name)) {
     errors.name = "Name is required";

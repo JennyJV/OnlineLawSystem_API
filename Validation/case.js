@@ -4,46 +4,42 @@ module.exports = function validateCaseInput(data) {
   let errors = {};
   // Convert empty fields to an empty string so we can use validator functions
  
-  data.petitionerName = !isEmpty(data.petitionerName) ? data.petitionerName : "";
-  data.petitionerEmail = !isEmpty(data.petitionerEmail) ? data.petitionerEmail : "";
-  data.accusedName = !isEmpty(data.accusedName) ? data.accusedName : "";
-  data.accusedAddress = !isEmpty(data.accusedAddress) ? data.accusedAddress : "";
-  data.court = !isEmpty(data.court) ? data.court : "";
-  data.lawyer = !isEmpty(data.lawyer) ? data.lawyer : "";
-  data.ipc = !isEmpty(data.ipc) ? data.ipc : "";
-  data.casestatus = !isEmpty(data.casestatus) ? data.casestatus : "";
-  data.caseType = !isEmpty(data.caseType) ? data.caseType : "";
+  data.petitionerName = !isEmpty(data.petitionerName.trim()) ? data.petitionerName.trim() : "";
+  data.petitionerEmail = !isEmpty(data.petitionerEmail.trim()) ? data.petitionerEmail.trim() : "";
+  data.accusedName = !isEmpty(data.accusedName.trim()) ? data.accusedName.trim() : "";
+  data.accusedAddress = !isEmpty(data.accusedAddress.trim()) ? data.accusedAddress.trim() : "";
+  data.court = !isEmpty(data.court.trim()) ? data.court.trim() : "";
+  data.lawyer = !isEmpty(data.lawyer.trim()) ? data.lawyer.trim() : "";
+  data.ipc = !isEmpty(data.ipc.trim()) ? data.ipc.trim() : "";
+  data.caseType = !isEmpty(data.caseType.trim()) ? data.caseType.trim() : "";
 
   if (Validator.isEmpty(data.petitionerName)) {
-    errors.petitionerName = "Petitioner Name field is required";
+    errors.petitionerName = "Petitioner Name is required";
   }
   if (Validator.isEmpty(data.petitionerEmail)) {
-    errors.petitionerEmail = "Email field is required";
+    errors.petitionerEmail = "Email is required";
   } else if (!Validator.isEmail(data.petitionerEmail)) {
     errors.petitionerEmail = "Email is invalid";
   }
   if (Validator.isEmpty(data.accusedName)) {
-    errors.accusedName = "Accused Name field is required";
+    errors.accusedName = "Accused Name is required";
   }
   if (Validator.isEmpty(data.accusedAddress)) {
-    errors.accusedAddress = "Accused Address field is required";
+    errors.accusedAddress = "Accused Address is required";
   }
   if (Validator.isEmpty(data.court)) {
-    errors.court = "Court field is required";
+    errors.court = "Court is required";
   }
   if (Validator.isEmpty(data.lawyer)) {
-    errors.lawyer = "Lawyer field is required";
+    errors.lawyer = "Lawyer is required";
   } else if (!Validator.isEmail(data.lawyer)) {
     errors.lawyer = "Lawyer Email is invalid";
   }
   if (Validator.isEmpty(data.ipc)) {
-    errors.ipc = "IPC field is required";
-  }
-  if (Validator.isEmpty(data.casestatus)) {
-    errors.casestatus = "Status field is required";
+    errors.ipc = "IPC is required";
   }
   if (Validator.isEmpty(data.caseType)) {
-    errors.caseType = "Case Type field is required";
+    errors.caseType = "Case Type is required";
   }
   return {
     errors,

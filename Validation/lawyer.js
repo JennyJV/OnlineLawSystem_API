@@ -4,10 +4,10 @@ module.exports = function validateLawyerInput(data) {
   let errors = {};
   // Convert empty fields to an empty string so we can use validator functions
 
-  data.name = !isEmpty(data.name) ? data.name : "";
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.regno = !isEmpty(data.regno) ? data.regno : "";
-  data.expertise = !isEmpty(data.expertise) ? data.expertise : "";
+  data.name = !isEmpty(data.name.trim()) ? data.name.trim() : "";
+  data.email = !isEmpty(data.email.trim()) ? data.email.trim() : "";
+  data.regno = !isEmpty(data.regno.trim()) ? data.regno.trim() : "";
+  data.expertise = !isEmpty(data.expertise.trim()) ? data.expertise.trim() : "";
   
   if (Validator.isEmpty(data.name)) {
     errors.name = "Name field is required";

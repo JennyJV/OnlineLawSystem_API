@@ -13,12 +13,12 @@ exports.states = (req, res) => {
       });
     } else {
       res.status(400).json({
-        message: 'States cannot be loaded',
+        error: 'No state found!',
       });
     }
   }).catch(error => {
     res.status(500).json({
-      message: 'Error in Database',
+      message: 'Error in Database!',
       error: error
     });
   });
@@ -36,12 +36,12 @@ const state=req.body.state;
       });
     } else {
       res.status(400).json({
-        message: 'States cannot be loaded',
+        error: 'No district found!',
       });
     }
   }).catch(error => {
     res.status(500).json({
-      message: 'Error in Database',
+      message: 'Error in Database!',
       error: error
     });
   });
@@ -58,12 +58,12 @@ Court.find({"district":district},{ "court": 1}).then(result => {
       });
     } else {
       res.status(400).json({
-        message: 'Courts cannot be loaded',
+        error: 'No court found!',
       });
     }
   }).catch(error => {
     res.status(500).json({
-      message: 'Error in Database',
+      message: 'Error in Database!',
       error: error
     });
   });
@@ -84,7 +84,7 @@ exports.addCourt = (req, res) => {
     Court.findOne({"court": req.body.court}).then(result => {
     if (result) {
       console.log("Result found: " + result.length);
-      res.status(400).json({ message: "Court already exists" });
+      res.status(400).json({ message: "Court already exists!" });
     } else {
       const newCourt = new Court({
         state: req.body.state,
@@ -93,7 +93,9 @@ exports.addCourt = (req, res) => {
       });
       newCourt
             .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
-          
+            .then(result=>
+              res.status(400).json({
+                message: 'Court added Successfully!!'
+              }))
+            .catch(err => res.status(400).json({ message: "Something went wrong!" }));
     }});}}

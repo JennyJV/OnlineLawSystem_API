@@ -14,7 +14,7 @@ exports.addLaw = (req, res) => {
     Law.findOne({$and:[{"chapter":req.body.chapter},{"ipc": req.body.ipc}]}).then(result => {
     if (result) {
       console.log("Result found: " + result.length);
-      res.status(400).json({ error: "Law already exists" });
+      res.status(400).json({ message: "Law already exists!" });
     } else {
       const newLaw = new Law({
         chapter: req.body.chapter,
@@ -22,9 +22,11 @@ exports.addLaw = (req, res) => {
        });
        newLaw
             .save()
-            .then(law => res.json(law))
-            .catch(err => console.log(err));
-          
+            .then(result=>
+              res.status(400).json({
+                message: 'Law added Successfully!!'
+              }))
+            .catch(err => res.status(400).json({ message: "Something went wrong!" }));
     }});}}
 
     exports.getAllLaw = (req, res) => {
@@ -37,12 +39,12 @@ exports.addLaw = (req, res) => {
             });
           } else {
             res.status(400).json({
-              message: 'States cannot be loaded',
+              error: 'No Law found!',
             });
           }
         }).catch(error => {
           res.status(500).json({
-            message: 'Error in Database',
+            message: 'Error in Database!',
             error: error
           });
         });}

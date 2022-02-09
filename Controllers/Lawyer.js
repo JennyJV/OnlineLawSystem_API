@@ -12,10 +12,10 @@ exports.addLawyer = (req, res) => {
   if (!isValid) {
     res.status(400).json(errors);
   }else{
-    Lawyer.findOne({$and:[{"name":req.body.name},{"email": req.body.email}]}).then(result => {
+    Lawyer.findOne({$or:[{"regno":req.body.regno},{"email": req.body.email}]}).then(result => {
     if (result) {
       console.log("Result found: " + result.length);
-      res.status(400).json({ error: "Lawyer already exists" });
+      res.status(400).json({ message: "Lawyer already exists!" });
     } else {
       const newLawyer = new Lawyer({
         name: req.body.name,
@@ -25,8 +25,11 @@ exports.addLawyer = (req, res) => {
        });
        newLawyer
             .save()
-            .then(lawyer => res.json(lawyer))
-            .catch(err => console.log(err));
+            .then(result=>
+              res.status(400).json({
+                message: 'Lawyer added Successfully !!'
+              }))
+            .catch(err => res.status(400).json({ message: "Something went wrong!" }));
           
     }});}}
 
@@ -41,12 +44,12 @@ exports.addLawyer = (req, res) => {
           });
         } else {
           res.status(400).json({
-            message: 'Lawyers cannot be loaded',
+            error: 'No Lawyer found!',
           });
         }
       }).catch(error => {
         res.status(500).json({
-          message: 'Error in Database',
+          message: 'Error in Database!',
           error: error
         });
       });
@@ -62,12 +65,12 @@ exports.addLawyer = (req, res) => {
           });
         } else {
           res.status(400).json({
-            message: 'Expertise cannot be loaded',
+            error: 'No expertise found!',
           });
         }
       }).catch(error => {
         res.status(500).json({
-          message: 'Error in Database',
+          message: 'Error in Database!',
           error: error
         });
       });
