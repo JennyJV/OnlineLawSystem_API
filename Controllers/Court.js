@@ -4,10 +4,8 @@ const validateCourtInput = require("../Validation/court");
 
 exports.states = (req, res) => {
   // Form validation
-  console.log("inside state");
   StateDistrict.find({}, { "state": 1}).then(result => {
     if (result.length > 0) {
-      console.log("Result found: " + result.length);
       res.status(200).json({
         states: result
       });
@@ -26,11 +24,9 @@ exports.states = (req, res) => {
 
 exports.districts = (req, res) => {
   // Form validation
-  console.log("inside districts");
 const state=req.body.state;
   StateDistrict.find({"state":state},{ "district": 1}).then(result => {
     if (result.length > 0) {
-      console.log("Result found: " + result.length);
       res.status(200).json({
         districts: result
       });
@@ -48,11 +44,9 @@ const state=req.body.state;
 }
 
 exports.getCourtsByArea = (req, res) => {
-  console.log("inside getCourtsByArea");
 const district=req.body.district;
 Court.find({"district":district},{ "court": 1}).then(result => {
     if (result.length > 0) {
-      console.log("Result found: " + result.length);
       res.status(200).json({
         courts: result
       });
@@ -70,20 +64,14 @@ Court.find({"district":district},{ "court": 1}).then(result => {
 }
 
 exports.addCourt = (req, res) => {
-  console.log("inside addCourt");
-  console.log("state: "+req.body.state);
-  console.log("district: "+req.body.district);
-  console.log("court: "+req.body.court);
   const { errors, isValid } = validateCourtInput(req.body);
   
   // Check validation
   if (!isValid) {
-    console.log(errors);
     res.status(400).json(errors);
   }else{
     Court.findOne({"court": req.body.court}).then(result => {
     if (result) {
-      console.log("Result found: " + result.length);
       res.status(400).json({ message: "Court already exists!" });
     } else {
       const newCourt = new Court({

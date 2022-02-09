@@ -2,7 +2,6 @@ const Case = require("../Models/Case");
 const validateCaseInput = require("../Validation/case");
 
 exports.fileCase = (req, res) => {
-  console.log("came inside fileCase");
   const { errors, isValid } = validateCaseInput(req.body);
   // Check validation
   if (!isValid) {
@@ -10,7 +9,6 @@ exports.fileCase = (req, res) => {
   }else{
     Case.findOne({$and:[{"petitionerEmail":req.body.petitionerEmail},{"accusedName": req.body.accusedName},{"court": req.body.court},{"lawyer": req.body.lawyer},{"ipc": req.body.ipc}]}).then(result => {
     if (result) {
-      console.log("Result found: " + result.length);
       res.status(400).json({ message: "Case already exists!" });
     } else {
       const newCase = new Case({
@@ -37,13 +35,10 @@ exports.fileCase = (req, res) => {
     }});}}
 
     exports.getCaseByUser = (req, res) => {
-      console.log("inside getCaseByUser");
       const userId=req.body.userId;
-      console.log();
       if(req.body.role == 'admin'){
         Case.find().then(result => {
           if (result.length > 0) {
-            console.log("Result found in getCaseByUser: " + result.length);
             const yearList = Array.from(new Set(result.map(obj => obj.year)));
             res.status(200).json({
               cases: result,
@@ -61,11 +56,8 @@ exports.fileCase = (req, res) => {
           });
         });
       }else if(req.body.role == 'lawyer'){
-        console.log("inside lawyer");
-        console.log(userId);
         Case.find({"lawyer":userId, "casestatus":"New"}).then(result => {
           if (result.length > 0) {
-            console.log("Result found: " + result.length);
             res.status(200).json({
               cases: result
             });
@@ -84,7 +76,6 @@ exports.fileCase = (req, res) => {
       else if(req.body.role == 'public'){
         Case.find({"petitionerEmail":userId}).then(result => {
           if (result.length > 0) {
-            console.log("Result found: " + result.length);
             res.status(200).json({
               cases: result
             });
@@ -107,11 +98,9 @@ exports.fileCase = (req, res) => {
     }
 
     exports.getnewCases = (req, res) => {
-      console.log("inside getnewCases");
       const userId=req.body.userId;
         Case.find({"lawyer":userId, "casestatus":"New"}).then(result => {
           if (result.length > 0) {
-            console.log("Result found: " + result.length);
             res.status(200).json({
               cases: result
             });
@@ -128,11 +117,9 @@ exports.fileCase = (req, res) => {
         });
       }
       exports.getAcceptedCases = (req, res) => {
-        console.log("inside getAcceptedCases");
         const userId=req.body.userId;
           Case.find({"lawyer":userId, "casestatus":"Accepted"}).then(result => {
             if (result.length > 0) {
-              console.log("Result found: " + result.length);
               res.status(200).json({
                 cases: result
               });
@@ -150,9 +137,6 @@ exports.fileCase = (req, res) => {
         }
       
         exports.filterCase = (req, res) => {
-          console.log("inside filterCase");
-          console.log(typeof req.body.caseByType);
-          console.log(typeof req.body.caseByYear);
           var jsonData = {};
           if(req.body.caseByType){
             jsonData.caseType=req.body.caseByType;
@@ -160,15 +144,12 @@ exports.fileCase = (req, res) => {
           if(req.body.caseByYear){
             jsonData.year=req.body.caseByYear;
           }
-          console.log(jsonData);
             Case.find(jsonData).then(result => {
               if (result.length > 0) {
-                console.log("Result found in filterCase: " + result.length);
                 res.status(200).json({
                   cases: result
                 });
               } else {
-                console.log("empty response");
                 res.status(400).json({
                   err: result,
                   message: 'No cases to display!'
@@ -183,13 +164,10 @@ exports.fileCase = (req, res) => {
           }
 
       exports.updateCaseStatus = (req, res) => {
-        console.log("inside updateCaseStatus");
         const caseID=req.body.caseId;
         const status=req.body.status;
-        console.log(caseID);
           Case.updateOne({"caseID" : caseID},{ $set: { casestatus:status }}).then(result => {
             if (result.length > 0) {
-              console.log("Result found: " + result.length);
               res.status(200).json({
                 cases: result
               });

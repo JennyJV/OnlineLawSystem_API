@@ -4,11 +4,11 @@ const keys = require("../Config/keys");
 const validateRegisterInput = require("../Validation/register");
 const validateLoginInput = require("../Validation/login");
 const User = require("../Models/User");
+const Lawyer = require("../Models/Lawyer");
 
 exports.register = (req, res) => {
-  // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
-  // Check validation
+  var flag=false;
   if (!isValid) {
     res.status(400).json(errors);
   }else{
@@ -16,27 +16,46 @@ exports.register = (req, res) => {
     if (user) {
       res.status(400).json({ message: "User already exists!" });
     } else {
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        aadhar: req.body.aadhar,
-        role: req.body.role.toLowerCase()
-      });
-      // Hash password before saving in database
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
-        });
-      });
+      if(req.body.role.toLowerCase()=="lawyer"){
+      Lawyer.findOne({"email":req.body.email}).then(user => {
+        if(user){
+          flag=true;
+      } else {
+        res.status(400).json({
+          message: 'User cannot be registered! Contact the administrator'
+        })
+      }
+      }).catch(err => {flag=false;res.status(400).json({ message: "Something went wrong!" })});
+    }else{
+      flag=true;
     }
-  });}
-};
+    if(flag){
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      aadhar: req.body.aadhar,
+      role: req.body.role.toLowerCase()
+    });
+    // Hash password before saving in database
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser
+          .save()
+          .then(result=>
+            res.status(400).json({
+              message: 'User Registration Successfull!!'
+            }))
+          .catch(err => console.log(err));
+      });
+    });
+  }
+  }
+});
+  }
+}
 
 exports.login = (req, res) => {
   // Form validation
@@ -44,12 +63,9 @@ exports.login = (req, res) => {
   // Check validation
   if (!isValid) {
     res.status(400).json(errors);
-    console.log(errors);
   }else{
   const email = req.body.email;
   const password = req.body.password;
-  console.log("inside login");
-  console.log(email+ " "+password);
   // Find user by email
   User.findOne({ email }).then(result => {
     // Check if user exists
@@ -73,7 +89,6 @@ exports.login = (req, res) => {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {
-            console.log("logged in successfully")
             res.status(200).json({
               success: true,
               token: "Bearer " + token,
@@ -85,7 +100,6 @@ exports.login = (req, res) => {
           }
         );
       } else {
-        console.log("Incorrect login credentials");
         res
           .status(400)
           .json({ message: "Incorrect login credentials!" });

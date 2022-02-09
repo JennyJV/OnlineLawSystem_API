@@ -5,8 +5,6 @@ const validateLawyerInput = require("../Validation/lawyer");
 
 
 exports.addLawyer = (req, res) => {
-  console.log("inside addLawyer");
-  console.log("name: "+req.body.name);
   const { errors, isValid } = validateLawyerInput(req.body);
   // Check validation
   if (!isValid) {
@@ -14,7 +12,6 @@ exports.addLawyer = (req, res) => {
   }else{
     Lawyer.findOne({$or:[{"regno":req.body.regno},{"email": req.body.email}]}).then(result => {
     if (result) {
-      console.log("Result found: " + result.length);
       res.status(400).json({ message: "Lawyer already exists!" });
     } else {
       const newLawyer = new Lawyer({
@@ -34,11 +31,9 @@ exports.addLawyer = (req, res) => {
     }});}}
 
     exports.getLawyerByExpertise = (req, res) => {
-      console.log("inside getLawyerByExpertise");
     const expertise=req.body.expertise;
     Lawyer.find({"expertise":expertise},{ "name": 1,"email":1}).then(result => {
         if (result.length > 0) {
-          console.log("Result found: " + result.length);
           res.status(200).json({
             lawyers: result
           });
@@ -56,10 +51,8 @@ exports.addLawyer = (req, res) => {
     }
 
     exports.expertise = (req, res) => {
-      console.log("inside expertise");
       Expertise.find({}, {"expertise": 1}).then(result => {
         if (result.length > 0) {
-          console.log("Result found: " + result.length);
           res.status(200).json({
             expertise: result
           });

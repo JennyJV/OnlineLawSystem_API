@@ -3,9 +3,6 @@ const validateLawInput = require("../Validation/law");
 
 
 exports.addLaw = (req, res) => {
-  console.log("inside addLaw");
-  console.log("chapter: "+req.body.chapter);
-  console.log("ipc: "+req.body.ipc);
   const { errors, isValid } = validateLawInput(req.body);
   // Check validation
   if (!isValid) {
@@ -13,7 +10,6 @@ exports.addLaw = (req, res) => {
   }else{
     Law.findOne({$and:[{"chapter":req.body.chapter},{"ipc": req.body.ipc}]}).then(result => {
     if (result) {
-      console.log("Result found: " + result.length);
       res.status(400).json({ message: "Law already exists!" });
     } else {
       const newLaw = new Law({
@@ -30,10 +26,8 @@ exports.addLaw = (req, res) => {
     }});}}
 
     exports.getAllLaw = (req, res) => {
-      console.log("inside getAllLaw");
         Law.find({},{ "chapter": 1, "ipc": 1,"_id":0}).then(result => {
           if (result.length > 0) {
-            console.log("Result found: " + result.length);
             res.status(200).json({
               laws: result
             });
